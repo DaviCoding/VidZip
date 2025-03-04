@@ -12,14 +12,16 @@ if (ffmpegPath) {
 
 export default async (input: string, output: string, length: number) => {
   ffmpeg(input)
+    .inputOptions(["-hwaccel cuda", "-c:v h264_cuvid"]) // Decodifica o vídeo usando a GPU
     .output(output)
-    .videoCodec("h264_nvenc") // Usa a GPU NVIDIA
-    .size("1280x720")
+    .videoCodec("h264_nvenc") // Usa NVENC para codificação acelerada pela GPU
     .outputOptions([
-      "-preset p4", // Equilíbrio entre qualidade e velocidade (p1 mais rápido, p7 mais qualidade)
-      "-crf 23", // Controla a qualidade (17 = alta qualidade, 23 = padrão, 28 = mais compactado)
-      "-maxrate 5000k", // Limita a taxa de bits para evitar estouro
-      "-bufsize 10000k", // Controle do buffer para estabilidade
+      "-gpu 0", // Se tiver mais de uma GPU, escolha qual usar
+      "-preset p4", // Equilíbrio entre velocidade e qualidade (p1 = mais rápido, p7 = mais qualidade)
+      "-crf 23", // Controla a qualidade sem necessidade de um bitrate fixo (ajuste entre 18-28)
+      "-rc vbr", // Habilita taxa de bits variável para compressão eficiente
+      "-maxrate 6000k", // Limita o pico da taxa de bits (ajuste conforme necessário)
+      "-bufsize 12000k", // Controla o buffer para evitar oscilações bruscas de qualidade
     ])
     .on("start", () => spinner.start())
     .on("progress", (progress) => {
