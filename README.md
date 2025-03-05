@@ -1,3 +1,3 @@
 # VidZip
  
-![image](https://github.com/user-attachments/assets/979c7879-cabe-4f20-bef7-749ebf4db12d)
+![image](https://github.com/user-attachments/assets/73f31943-f609-4023-984e-159138806928)
